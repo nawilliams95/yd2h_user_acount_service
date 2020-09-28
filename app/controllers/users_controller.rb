@@ -5,7 +5,7 @@ class UsersController < ApplicationController
   def index
     @users = User.all
 
-    render json: @users
+    render json: {status: 200, user: @users}
   end
 
   # GET /users/1
@@ -37,6 +37,15 @@ class UsersController < ApplicationController
   def destroy
     @user.destroy
   end
+
+  def login
+    @user = User.find_by(username: params[:user][:username])
+    if @user && @user.authenticate(params[:user][:password])
+      render json: {status: 200, user: @user}
+    else
+      render json: {status: 401, message: "Unauthorized"}
+    end
+end
 
   private
     # Use callbacks to share common setup or constraints between actions.
