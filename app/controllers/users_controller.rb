@@ -57,4 +57,32 @@ end
     def user_params
       params.require(:user).permit(:username, :first_name, :last_name, :email, :avatar_img, :password_digest)
     end
+
+    def payload(id, username)
+      {
+        exp: (Time.now + 30.minutes).to_i,
+        iat: Time.now.to_i,
+        iss: ENV['JWT_ISSUER'],
+        user: {
+          id: id,
+          username: username
+        }
+      }
+    end
+
+    def create_token(id, username)
+      JWT.encode(payload(id, username), ENV['JWT_SECRET'], 'HS256')
+    end
+
+    def current_user(id, username, email, first_name, last_name, created_at) 
+      user {
+        id: id,
+        username: username,
+        email: email,
+        first_name: first_name,
+        last_name: last_name,
+        member_since: Time.at(created_at).strftime("%B %e, %Y")
+      }
+    end
+
 end
