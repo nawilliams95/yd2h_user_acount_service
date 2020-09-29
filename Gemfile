@@ -16,6 +16,11 @@ gem 'puma', '~> 4.1'
 # Use Active Model has_secure_password
 gem 'bcrypt', '~> 3.1.7'
 
+#Use jwt to generrate token
+gem 'jwt'
+#use .env rails to hide securty keys and other seacrets
+gem 'dotenv-rails'
+
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
 
