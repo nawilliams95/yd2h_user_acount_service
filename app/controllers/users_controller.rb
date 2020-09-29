@@ -38,15 +38,18 @@ class UsersController < ApplicationController
     @user.destroy
   end
 
-  def login
-    @user = User.find_by(username: params[:user][:username])
-    if @user && @user.authenticate(params[:user][:password])
-      render json: {status: 200, user: @user}
-    else
-      render json: {status: 401, message: "Unauthorized"}
-    end
-end
+  def login                                                                        
+    user = User.find_by(username: params[:user][:username])                        
+    if user && user.authenticate(params[:user][:password])                         
+      token = create_token(user.id, user.username) 
+      idcard = current_user(user.id, user.username, user.email, user.first_name, user.last_name, user.avatar_img, user.created_at)                                
+      render json: { status: 200, token: token, idcard: idcard, user: user }                       
+    else                                                                           
+      render json: { status: 401, message: "Unauthorized" }                        
+    end                                                                            
+  end
 
+ 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
@@ -74,13 +77,14 @@ end
       JWT.encode(payload(id, username), ENV['JWT_SECRET'], 'HS256')
     end
 
-    def current_user(id, username, email, first_name, last_name, created_at) 
-      user {
+    def current_user(id, username, email, first_name, last_name, avatar_img, created_at) 
+     {
         id: id,
         username: username,
         email: email,
         first_name: first_name,
         last_name: last_name,
+        img: avatar_img,
         member_since: Time.at(created_at).strftime("%B %e, %Y")
       }
     end
