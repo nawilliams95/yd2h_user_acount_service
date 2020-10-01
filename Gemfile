@@ -20,6 +20,7 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'jwt'
 #use .env rails to hide securty keys and other seacrets
 gem 'dotenv-rails'
+gem 'figaro'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
