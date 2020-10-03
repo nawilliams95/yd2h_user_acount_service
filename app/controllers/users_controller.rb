@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :update, :destroy]
-  before_action :authenticate_token, except: [:login, :create, :index]
-  before_action :authorize_user, except: [:login, :create, :index]
+  before_action :authenticate_token, except: [:login, :create, :index, :profile]
+  before_action :authorize_user, except: [:login, :create, :index, :profile]
 
   # GET /users
   def index
@@ -9,13 +9,20 @@ class UsersController < ApplicationController
 
     render json: {status: 200, user: @users}
   end
-
+  
   # GET /users/1
   def show
     render json: @user
   end
 
-  # POST /users
+  #Get User Profile users/profile/username
+  def profile
+    @oneuser = User.find_by(username: params[:username]) 
+    profile = user_profile(@oneuser.id, @oneuser.username, @oneuser.email, @oneuser.first_name, @oneuser.last_name, @oneuser.avatar_img, @oneuser.created_at) 
+    render json: {status: 200, user_profile: profile}
+  end
+
+  # POST /signup
   def create
     @user = User.new(user_params)
 
@@ -43,7 +50,7 @@ class UsersController < ApplicationController
   end
 
   def login                                                                        
-    user = User.find_by(username: params[:user][:username])                        
+    user = User.find_by(username: params[:user][:username])            
     if user && user.authenticate(params[:user][:password])                         
       token = create_token(user.id, user.username) 
       idcard = current_user(user.id, user.username, user.email, user.first_name, user.last_name, user.avatar_img, user.created_at)                                
@@ -92,5 +99,17 @@ class UsersController < ApplicationController
         member_since: Time.at(created_at).strftime("%B %e, %Y")
       }
     end
+
+    def user_profile(id, username, email, first_name, last_name, avatar_img, created_at) 
+      {
+         id: id,
+         username: username,
+         email: email,
+         first_name: first_name,
+         last_name: last_name,
+         img: avatar_img,
+         member_since: Time.at(created_at).strftime("%B %e, %Y")
+       }
+     end
 
 end
