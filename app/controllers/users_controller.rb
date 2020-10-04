@@ -31,7 +31,7 @@ class UsersController < ApplicationController
       # WelcomeMailer.welcome_email(user).deliver
       token = create_token(user.id, user.username) 
       idcard = current_user(user.id, user.username, user.email, user.first_name, user.last_name, user.avatar_img, user.created_at)
-      render json: @user, status: :created, location: @user, token: token, idcard: idcard 
+      render json: { status: :created, location: @user, token: token, idcard: idcard}
     else
       render json: @user.errors, status: :unprocessable_entity
     end
