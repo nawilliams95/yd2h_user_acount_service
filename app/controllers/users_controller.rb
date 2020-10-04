@@ -7,7 +7,7 @@ class UsersController < ApplicationController
   def index
     @users = User.all
 
-    render json: {status: 200, user: @users}
+    render json:  @users
   end
   
   # GET /users/1
@@ -19,7 +19,7 @@ class UsersController < ApplicationController
   def profile
     @oneuser = User.find_by(username: params[:username]) 
     profile = user_profile(@oneuser.id, @oneuser.username, @oneuser.email, @oneuser.first_name, @oneuser.last_name, @oneuser.avatar_img, @oneuser.created_at) 
-    render json: {status: 200, user_profile: profile}
+    render json: profile
   end
 
   # POST /signup
@@ -54,7 +54,7 @@ class UsersController < ApplicationController
     if user && user.authenticate(params[:user][:password])                         
       token = create_token(user.id, user.username) 
       idcard = current_user(user.id, user.username, user.email, user.first_name, user.last_name, user.avatar_img, user.created_at)                                
-      render json: { status: 200, token: token, idcard: idcard, user: user }                       
+      render json: { status: 200, token: token, idcard: idcard }                       
     else                                                                           
       render json: { status: 401, message: "Unauthorized" }                        
     end                                                                            
