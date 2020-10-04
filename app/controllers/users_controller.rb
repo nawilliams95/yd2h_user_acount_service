@@ -27,7 +27,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      @new_user = User.find.last
+      @new_user = User.last
       #sends email to wlecome new users
       # WelcomeMailer.welcome_email(user).deliver
       token = create_token(@new_user.id, @new_user.username) 
