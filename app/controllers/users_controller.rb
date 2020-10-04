@@ -29,7 +29,9 @@ class UsersController < ApplicationController
     if @user.save
       #sends email to wlecome new users
       # WelcomeMailer.welcome_email(user).deliver
-      render json: @user, status: :created, location: @user
+      token = create_token(user.id, user.username) 
+      idcard = current_user(user.id, user.username, user.email, user.first_name, user.last_name, user.avatar_img, user.created_at)
+      render json: @user, status: :created, location: @user, token: token, idcard: idcard 
     else
       render json: @user.errors, status: :unprocessable_entity
     end
