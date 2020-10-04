@@ -29,7 +29,7 @@ class UsersController < ApplicationController
     if @user.save
       @new_user = User.last
       #sends email to wlecome new users
-      WelcomeMailer.welcome_email(user).deliver
+      WelcomeMailer.welcome_email(@new_user).deliver
       token = create_token(@new_user.id, @new_user.username) 
       idcard = current_user(@new_user.id, @new_user.username, @new_user.email, @new_user.first_name, @new_user.last_name, @new_user.avatar_img, @new_user.created_at)
       render json: { status: :created, location: @user, token: token, idcard: idcard}
